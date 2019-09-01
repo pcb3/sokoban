@@ -1,7 +1,9 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
 #reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname sokoban) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+
 ; pcb3 https://github.com/pcb3/sokoban
+
 ; Sokoban
 
 (require 2htdp/image)
@@ -48,7 +50,7 @@
 
 ; a board is a structure
 ; (make-state Player Block Goal)
-; a board is the the state of the game, including
+; a board is the state of the game, including
 ; player, block and goal positions
 (define BOARD0 (make-board PLAYER0 BLOCK0 GOAL0))
 
