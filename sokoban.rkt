@@ -9,24 +9,54 @@
 
 ; physical constants
 (define SIZE 20)
+(define DELTA (/ SIZE 2))
 (define WIDTH (* SIZE SIZE))
 (define HEIGHT (* SIZE SIZE))
 (define MT (empty-scene WIDTH HEIGHT))
 (define MAX (* SIZE SIZE))
 
 ; gaphical constants
-(define (BLOCK colour)
+(define (SQUARE colour)
   (square SIZE "solid" colour))
-(define MBLOCK (BLOCK "tomato"))
-(define FBLOCK (BLOCK "Cornflowerblue"))
+(define BLOCK (SQUARE "Cornflowerblue"))
 (define GOAL
-  (circle (/ SIZE 2) "solid" "gold"))
+  (circle DELTA "solid" "gold"))
+(define PLAYER
+  (circle DELTA "solid" "tomato"))
 
-; Permutation -> Permutation
+; structures
+(define-struct board [player block goal])
+
+; Interpretation
+
+; a player is a Posn:
+; a player is the user controllable object
+(define PLAYER0 (make-posn DELTA DELTA))
+
+; a block is one of:
+; '()
+; (cons Posn block)
+; a block is a list of block positions on the board
+(define BLOCK0
+  (list (make-posn (* 1 DELTA) (* 2 DELTA))
+        (make-posn (* 1 DELTA) (* 3 DELTA))))
+
+; a goal is a Posn:
+; a goal is the position the the position a block
+; must inhabit in order to trigger the win condition
+(define GOAL0 (make-posn (* DELTA 3) (* DELTA 3)))
+
+; a board is a structure
+; (make-state Player Block Goal)
+; a board is the the state of the game, including
+; player, block and goal positions
+(define BOARD0 (make-board PLAYER0 BLOCK0 GOAL0))
+
+; board -> board 
 ; launches the program from some initial state c
 
 ;(define (sokoban rate)
-  ;(big-bang STATE0
+  ;(big-bang BOARD0
     ;[on-tick tock rate]
     ;[to-draw render]
     ;[stop-when last-world? last-picture]
