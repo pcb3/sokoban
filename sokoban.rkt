@@ -79,32 +79,36 @@
 ; consumes a Board b and image im and renders an
 ; image to the screen
 
-;(check-expect
-; (render BOARD1)
-; (place-image
-;  PLAYER
-;  (posn-x (board-player BOARD1))
-;  (posn-y (board-player BOARD1))
-;  (place-image
-;   BLOCK
-;   (posn-x (first (board-block BOARD1)))
-;   (posn-y (first (board-block BOARD1)))
-;   (place-image
-;    GOAL
-;    (posn-x (board-goal BOARD1))
-;    (posn-y (board-goal BOARD1))
-;    MT))))
-;             
-;(define (fn-render b)
-;  (render-player ...
-;                 (render-block ...
-;                                (render-goal ...
-;                                 MT))))
-; 
-;(define (render b)
-;  (render-player b
-;                 (render-block b
-;                                (render-goal b MT))))
+(check-expect
+ (render BOARD1)
+ (place-image
+  PLAYER
+  (posn-x (board-player BOARD1))
+  (posn-y (board-player BOARD1))
+  (place-image
+   BLOCK
+   (posn-x (first (board-block BOARD1)))
+   (posn-y (first (board-block BOARD1)))
+   (place-image
+   BLOCK
+   (posn-x (first (rest (board-block BOARD1))))
+   (posn-y (first (rest (board-block BOARD1))))
+   (place-image
+    GOAL
+    (posn-x (board-goal BOARD1))
+    (posn-y (board-goal BOARD1))
+    MT)))))
+             
+(define (fn-render b)
+  (render-player ...
+                 (extract-block ...
+                                (render-goal ...
+                                 MT))))
+ 
+(define (render b)
+  (render-player b
+                 (extract-block b
+                                (render-goal b MT))))
 
 ; Board Image -> Image
 ; consumes a Board b and image im and renders the
