@@ -3,7 +3,6 @@
 #reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname sokoban) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 
 ; pcb3 https://github.com/pcb3/sokoban
-
 ; Sokoban
 
 (require 2htdp/image)
@@ -34,30 +33,31 @@
 ; a player is a Posn:
 ; a player is the user controllable object
 (define PLAYER0 (make-posn DELTA DELTA))
+(define PLAYER1 (make-posn (* 2 DELTA) (* 2 DELTA)))
 
 ; a block is one of:
 ; '()
 ; (cons Posn block)
 ; a block is a list of block positions on the board
 (define BLOCK0 '())
-
 (define BLOCK1
-  (list (make-posn (* 1 DELTA) (* 2 DELTA))))
-
+  (list (make-posn (* 3 DELTA) (* 3 DELTA))))
 (define BLOCK2
-  (list (make-posn (* 1 DELTA) (* 2 DELTA))
-        (make-posn (* 1 DELTA) (* 3 DELTA))))
+  (list (make-posn (* 3 DELTA) (* 3 DELTA))
+        (make-posn (* 4 DELTA) (* 4 DELTA))))
 
 ; a goal is a Posn:
 ; a goal is the position the the position a block
 ; must inhabit in order to trigger the win condition
-(define GOAL0 (make-posn (* DELTA 3) (* DELTA 3)))
+(define GOAL0 (make-posn DELTA DELTA))
+(define GOAL1 (make-posn (* 5 DELTA) (* 5 DELTA)))
 
 ; a Board is a structure
 ; (make-state Player Block Goal)
 ; a Board is the state of the game, including
 ; player, block and goal positions
 (define BOARD0 (make-board PLAYER0 BLOCK0 GOAL0))
+(define BOARD1 (make-board PLAYER1 BLOCK1 GOAL1))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board updated
@@ -79,10 +79,32 @@
 ; consumes a Board b and renders an image to the
 ; screen
 
-
-              
-
-(define (render b) MT)
+;(check-expect
+; (render BOARD1)
+; (place-image
+;  PLAYER
+;  (posn-x (board-player BOARD1))
+;  (posn-y (board-player BOARD1))
+;  (place-image
+;   BLOCK
+;   (posn-x (first (board-block BOARD1)))
+;   (posn-y (first (board-block BOARD1)))
+;   (place-image
+;    GOAL
+;    (posn-x (board-goal BOARD1))
+;    (posn-y (board-goal BOARD1))
+;    MT))))
+                
+;(define (fn-render b)
+;  (render-player ...
+;                 (render-blocks ...
+;                                (render-goal ...
+;                                 MT))))
+; 
+;(define (render b)
+;  (render-player b
+;                 (render-blocks b
+;                                (render-goal b MT))))
 
 ; Board -> Board 
 ; launches the program from some initial state b
