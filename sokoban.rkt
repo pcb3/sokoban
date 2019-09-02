@@ -57,11 +57,11 @@
 ; a Board is the state of the game, including
 ; player, block and goal positions
 (define BOARD0 (make-board PLAYER0 BLOCK0 GOAL0))
-(define BOARD1 (make-board PLAYER1 BLOCK1 GOAL1))
+(define BOARD1 (make-board PLAYER1 BLOCK2 GOAL1))
 
 ; Board -> Board
-; consumes a Board b and produces a new Board updated
-; each tick
+; consumes a Board b and produces a new Board
+; updated each tick
 
 (check-expect (tick BOARD0) BOARD0)
 
@@ -75,9 +75,9 @@
               (board-block b)
               (board-goal b)))
 
-; Board -> Image
-; consumes a Board b and renders an image to the
-; screen
+; Board Image -> Image
+; consumes a Board b and image im and renders an
+; image to the screen
 
 ;(check-expect
 ; (render BOARD1)
@@ -97,16 +97,16 @@
 ;             
 ;(define (fn-render b)
 ;  (render-player ...
-;                 (render-blocks ...
+;                 (render-block ...
 ;                                (render-goal ...
 ;                                 MT))))
 ; 
 ;(define (render b)
 ;  (render-player b
-;                 (render-blocks b
+;                 (render-block b
 ;                                (render-goal b MT))))
 
-; Board -> Image
+; Board Image -> Image
 ; consumes a Board b and image im and renders the
 ; player to the screen
 
@@ -129,7 +129,65 @@
                (posn-y (board-player b))
                im))
 
-; Board -> Image
+; Board Image -> Image
+; consumes a block blk and image im and renders the
+; blocks to the screen
+
+(check-expect
+ (render-block BLOCK2 MT)
+ (place-image
+  BLOCK
+  (posn-x (first BLOCK2))
+  (posn-y (first BLOCK2))
+  (place-image
+   BLOCK
+   (posn-x (first (rest BLOCK2)))
+   (posn-y (first (rest BLOCK2)))
+   MT)))
+
+(define (fn-render-block blk im)
+  (cond
+    [(empty? ...) ...]
+    [else
+     (place-image
+      BLOCK
+      (posn-x (first ...))
+      (posn-y (first ...))
+      (render-block (rest ...) ...))]))
+
+(define (render-block blk im)
+  (cond
+    [(empty? blk) im]
+    [else
+     (place-image
+      BLOCK
+      (posn-x (first blk))
+      (posn-y (first blk))
+      (render-block (rest blk) im))]))
+      
+; Board Image -> List Image
+; consumes a Board b and Image im and extracts the
+; list of blocks
+
+(check-expect
+ (extract-block BOARD1 MT)
+ (place-image
+  BLOCK
+  (posn-x (first BLOCK2))
+  (posn-y (first BLOCK2))
+  (place-image
+   BLOCK
+   (posn-x (first (rest BLOCK2)))
+   (posn-y (first (rest BLOCK2)))
+   MT)))      
+
+(define (fn-extract-block b im)
+  (render-block (board-block ...) ...))
+
+(define (extract-block b im)
+  (render-block (board-block b) im))
+
+; Board Image -> Image
 ; consumes a Board b and image im and renders the
 ; goal to the screen
 
