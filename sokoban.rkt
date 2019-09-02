@@ -39,7 +39,12 @@
 ; '()
 ; (cons Posn block)
 ; a block is a list of block positions on the board
-(define BLOCK0
+(define BLOCK0 '())
+
+(define BLOCK1
+  (list (make-posn (* 1 DELTA) (* 2 DELTA))))
+
+(define BLOCK2
   (list (make-posn (* 1 DELTA) (* 2 DELTA))
         (make-posn (* 1 DELTA) (* 3 DELTA))))
 
@@ -48,24 +53,49 @@
 ; must inhabit in order to trigger the win condition
 (define GOAL0 (make-posn (* DELTA 3) (* DELTA 3)))
 
-; a board is a structure
+; a Board is a structure
 ; (make-state Player Block Goal)
-; a board is the state of the game, including
+; a Board is the state of the game, including
 ; player, block and goal positions
 (define BOARD0 (make-board PLAYER0 BLOCK0 GOAL0))
 
-; board -> board 
-; launches the program from some initial state c
+; Board -> Board
+; consumes a Board b and produces a new Board updated
+; each tick
+
+(check-expect (tick BOARD0) BOARD0)
+
+(define (fn-tick b)
+  (make-board (board-player ...)
+              (board-block ...)
+              (board-goal ...)))
+
+(define (tick b)
+  (make-board (board-player b)
+              (board-block b)
+              (board-goal b)))
+
+; Board -> Image
+; consumes a Board b and renders an image to the
+; screen
+
+
+              
+
+(define (render b) MT)
+
+; Board -> Board 
+; launches the program from some initial state b
 
 ;(define (sokoban rate)
-  ;(big-bang BOARD0
-    ;[on-tick tock rate]
-    ;[to-draw render]
-    ;[stop-when last-world? last-picture]
-    ;[state #t]
-    ;[close-on-stop 3]
-    ;[name "Sokoban"]
-    ;))
+;  (big-bang BOARD0
+;    [on-tick tock rate]
+;    [to-draw render]
+;    [stop-when last-world? last-picture]
+;    [state #t]
+;    [close-on-stop 3]
+;    [name "Sokoban"]
+;    ))
 
 ; usage
 ;(sokoban 0.1)
