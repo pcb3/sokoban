@@ -94,7 +94,7 @@
 ;    (posn-x (board-goal BOARD1))
 ;    (posn-y (board-goal BOARD1))
 ;    MT))))
-                
+;             
 ;(define (fn-render b)
 ;  (render-player ...
 ;                 (render-blocks ...
@@ -105,6 +105,52 @@
 ;  (render-player b
 ;                 (render-blocks b
 ;                                (render-goal b MT))))
+
+; Board -> Image
+; consumes a Board b and image im and renders the
+; player to the screen
+
+(check-expect
+ (render-player BOARD1 MT)
+ (place-image PLAYER
+              (posn-x (board-player BOARD1))
+              (posn-y (board-player BOARD1))
+              MT))
+
+(define (fn-render-player b im)
+  (place-image ...
+               (posn-x (board-player ...))
+               (posn-y (board-player ...))
+               ...))
+
+(define (render-player b im)
+  (place-image PLAYER
+               (posn-x (board-player b))
+               (posn-y (board-player b))
+               im))
+
+; Board -> Image
+; consumes a Board b and image im and renders the
+; goal to the screen
+
+(check-expect
+ (render-goal BOARD1 MT)
+ (place-image GOAL
+              (posn-x (board-goal BOARD1))
+              (posn-y (board-goal BOARD1))
+              MT))
+
+(define (fn-render-goal b im)
+  (place-image ...
+               (posn-x (board-goal ...))
+               (posn-y (board-goal ...))
+               ...))
+
+(define (render-goal b im)
+  (place-image GOAL
+               (posn-x (board-goal b))
+               (posn-y (board-goal b))
+               im))
 
 ; Board -> Board 
 ; launches the program from some initial state b
@@ -121,5 +167,30 @@
 
 ; usage
 ;(sokoban 0.1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
