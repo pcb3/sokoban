@@ -63,14 +63,14 @@
 ; consumes a Board b and produces a new Board
 ; updated each tick
 
-(check-expect (tick BOARD0) BOARD0)
+(check-expect (tock BOARD0) BOARD0)
 
-(define (fn-tick b)
+(define (fn-tock b)
   (make-board (board-player ...)
               (board-block ...)
               (board-goal ...)))
 
-(define (tick b)
+(define (tock b)
   (make-board (board-player b)
               (board-block b)
               (board-goal b)))
@@ -90,20 +90,20 @@
    (posn-x (first (board-block BOARD1)))
    (posn-y (first (board-block BOARD1)))
    (place-image
-   BLOCK
-   (posn-x (first (rest (board-block BOARD1))))
-   (posn-y (first (rest (board-block BOARD1))))
-   (place-image
-    GOAL
-    (posn-x (board-goal BOARD1))
-    (posn-y (board-goal BOARD1))
-    MT)))))
+    BLOCK
+    (posn-x (first (rest (board-block BOARD1))))
+    (posn-y (first (rest (board-block BOARD1))))
+    (place-image
+     GOAL
+     (posn-x (board-goal BOARD1))
+     (posn-y (board-goal BOARD1))
+     MT)))))
              
 (define (fn-render b)
   (render-player ...
-                 (extract-block ...
-                                (render-goal ...
-                                 MT))))
+   (extract-block ...
+    (render-goal ...
+     MT))))
  
 (define (render b)
   (render-player b
@@ -123,9 +123,9 @@
 
 (define (fn-render-player b im)
   (place-image ...
-               (posn-x (board-player ...))
-               (posn-y (board-player ...))
-               ...))
+   (posn-x (board-player ...))
+   (posn-y (board-player ...))
+   ...))
 
 (define (render-player b im)
   (place-image PLAYER
@@ -204,9 +204,9 @@
 
 (define (fn-render-goal b im)
   (place-image ...
-               (posn-x (board-goal ...))
-               (posn-y (board-goal ...))
-               ...))
+   (posn-x (board-goal ...))
+   (posn-y (board-goal ...))
+   ...))
 
 (define (render-goal b im)
   (place-image GOAL
@@ -214,21 +214,104 @@
                (posn-y (board-goal b))
                im))
 
+; Board Key -> Board
+; consumes a Board b and Key k and produces a new
+; Board dependent on the key
+
+(check-expect (control BOARD1 "")
+              BOARD1)
+(check-expect
+ (control BOARD1 "right")
+ (make-board
+  (make-posn (+ (posn-x (board-player BOARD1)) SIZE)
+             (posn-y (board-player BOARD1)))
+  (board-block BOARD1)
+  (board-goal BOARD1)))
+
+(check-expect
+ (control BOARD1 "left")
+ (make-board
+  (make-posn (- (posn-x (board-player BOARD1)) SIZE)
+             (posn-y (board-player BOARD1)))
+  (board-block BOARD1)
+  (board-goal BOARD1)))
+
+(check-expect
+ (control BOARD1 "up")
+ (make-board
+  (make-posn (posn-x (board-player BOARD1))
+             (- (posn-y (board-player BOARD1)) SIZE))
+  (board-block BOARD1)
+  (board-goal BOARD1)))
+
+(check-expect
+ (control BOARD1 "down")
+ (make-board
+  (make-posn (posn-x (board-player BOARD1))
+             (+ (posn-y (board-player BOARD1)) SIZE))
+  (board-block BOARD1)
+  (board-goal BOARD1)))
+
+(define (control b key)
+  (cond
+    [(string=? key "left")
+     (make-board
+      (make-posn (- (posn-x (board-player b)) SIZE)
+                 (posn-y (board-player b)))
+      (board-block b) (board-goal b))]
+    [(string=? key "right")
+     (make-board
+      (make-posn (+ (posn-x (board-player b)) SIZE)
+                 (posn-y (board-player b)))
+      (board-block b) (board-goal b))]
+    [(string=? key "up")
+     (make-board
+      (make-posn (posn-x (board-player b))
+                 (- (posn-y (board-player b)) SIZE))
+      (board-block b) (board-goal b))]
+    [(string=? key "down")
+     (make-board
+      (make-posn (posn-x (board-player b))
+                 (+ (posn-y (board-player b)) SIZE))
+      (board-block b) (board-goal b))]
+    [else b]))
+
+; Board -> Boolean
+; consumes a Board b and produces true if the end
+; condition has been met
+
+(check-expect (last-world? BOARD0) #false)
+(check-expect
+ (last-world?
+  (make-board
+   (board-player BOARD1)
+   (list
+    (make-posn SIZE SIZE))
+   (make-posn SIZE SIZE))) #true)
+
+(define (fn-last-world? b)
+  (member? (board-goal ...)
+           (board-block ...)))
+
+(define (last-world? b)
+  (member? (board-goal b)
+           (board-block b)))
 ; Board -> Board 
 ; launches the program from some initial state b
 
-;(define (sokoban rate)
-;  (big-bang BOARD0
-;    [on-tick tock rate]
-;    [to-draw render]
-;    [stop-when last-world? last-picture]
-;    [state #t]
-;    [close-on-stop 3]
-;    [name "Sokoban"]
-;    ))
+(define (sokoban rate)
+  (big-bang BOARD1
+    [on-tick tock rate]
+    [to-draw render]
+    [on-key control]
+    ;[stop-when last-world? last-picture]
+    [state #t]
+    [close-on-stop 3]
+    [name "Sokoban"]
+    ))
 
 ; usage
-;(sokoban 0.1)
+;(sokoban 1)
 
 
 
