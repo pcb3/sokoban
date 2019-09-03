@@ -308,6 +308,21 @@
   (member? (board-goal b)
            (board-block b)))
 
+; Board -> Image
+; consumes a Board b and produces the final image
+(check-expect
+ (last-picture BOARD1)
+ (place-image LAST-MSG (/ WIDTH 2) (/ HEIGHT 2)
+              (render BOARD1)))
+
+(define (fn-last-picture b)
+  (place-image ... ... ...
+   (render ...)))
+
+(define (last-picture b)
+  (place-image LAST-MSG (/ WIDTH 2) (/ HEIGHT 2)
+               (render b)))
+
 ; Board -> Board 
 ; launches the program from some initial state b
 
