@@ -69,6 +69,10 @@
 ; player, block and goal positions
 (define BOARD0 (make-board PLAYER0 BLOCK0 GOAL0))
 (define BOARD1 (make-board PLAYER1 BLOCK2 GOAL1))
+(define BOARD2 (make-board
+                (make-posn MIN MIN)
+                (list (make-posn (+ MIN SIZE) MIN))
+                (make-posn (+ MIN (* SIZE 2)) MIN)))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board
@@ -317,11 +321,67 @@
 
 (define (fn-last-picture b)
   (place-image ... ... ...
-   (render ...)))
+               (render ...)))
 
 (define (last-picture b)
   (place-image LAST-MSG (/ WIDTH 2) (/ HEIGHT 2)
                (render b)))
+
+; Board Key -> Boolean
+; consumes a Board b and a Key key and returns
+; true if its possible to push an adjacent block
+
+(check-expect
+ (push?
+  (make-board
+   (make-posn MIN MIN)
+   (list (make-posn (+ MIN SIZE) MIN))
+   (make-posn (+ MIN (* SIZE 2)) MIN)) "right")
+ #true)
+
+(check-expect
+ (push?
+  (make-board
+   (make-posn MIN MIN)
+   (list (make-posn (+ MIN SIZE) MIN))
+   (make-posn (+ MIN (* SIZE 2)) MIN)) "left")
+ #false)
+
+(define (push? b key)
+  (local  (; Board Key -> Boolean
+           ; consumes a Board b and Key key and
+           ; produces true if the players x coord
+           ; is a member of any of the block x coords
+           ; on key side
+           (define (adjacent? b key)
+             (cond
+               [(and (string=? key "right")
+                     (member?
+                      (make-posn (+ (posn-x (board-player b)) SIZE)
+                                 (posn-y (board-player b)))
+                      (board-block b)))
+                #true]
+               [(and (string=? key "left")
+                     (member?
+                      (make-posn (- (posn-x (board-player b)) SIZE)
+                                 (posn-y (board-player b)))
+                      (board-block b)))
+                #true]
+               [(and (string=? key "up")
+                     (member?
+                      (make-posn (posn-x (board-player b))
+                                 (- (posn-y (board-player b)) SIZE))
+                      (board-block b)))
+                #true]
+               [(and (string=? key "down")
+                     (member?
+                      (make-posn (posn-x (board-player b))
+                                 (+ (posn-y (board-player b)) SIZE))
+                      (board-block b)))
+                #true]
+               [else
+                #false])))
+    (adjacent? b key)))
 
 ; Board -> Board 
 ; launches the program from some initial state b
@@ -331,7 +391,7 @@
     [on-tick tock rate]
     [to-draw render]
     [on-key control]
-    ;[stop-when last-world? last-picture]
+    [stop-when last-world? last-picture]
     [state #t]
     [close-on-stop 3]
     [name "Sokoban"]
