@@ -14,7 +14,8 @@
 (define WIDTH (* SIZE SIZE))
 (define HEIGHT (* SIZE SIZE))
 (define MT (empty-scene WIDTH HEIGHT))
-(define MAX (* SIZE SIZE))
+(define MIN DELTA)
+(define MAX (- (* SIZE SIZE) DELTA))
 
 ; gaphical constants
 (define (SQUARE colour)
@@ -24,6 +25,16 @@
   (circle DELTA "solid" "gold"))
 (define PLAYER
   (circle DELTA "solid" "tomato"))
+(define START-MSG (text "SOKOBAN!" (* SIZE 2) 'white))
+(define INSTRUCTION-MSG1 (text "MOVE WITH THE DIRECTION KEYS"
+                               16 'lightgray))
+(define INSTRUCTION-MSG2 (text "PUSH BLOCKS ONTO THE GOAL TO WIN"
+                               16 'lightgray))
+(define INSTRUCTION-MSG3 (text "PRESS R TO RESET"
+                               16 'lightgray))
+(define LAST-MSG (text "GAME OVER" (* SIZE 2) 'lightgray))
+(define RESTART-MSG (text "PRESS R TO PLAY AGAIN OR Q TO QUIT"
+                          16 'lightgray))
 
 ; structures
 (define-struct board [player block goal])
@@ -281,13 +292,13 @@
 ; condition has been met
 
 (check-expect (last-world? BOARD0) #false)
+
 (check-expect
- (last-world?
-  (make-board
-   (board-player BOARD1)
-   (list
-    (make-posn SIZE SIZE))
-   (make-posn SIZE SIZE))) #true)
+ (last-world? (make-board
+               (board-player BOARD1)
+               (list
+                (make-posn SIZE SIZE))
+               (make-posn SIZE SIZE))) #true)
 
 (define (fn-last-world? b)
   (member? (board-goal ...)
@@ -296,6 +307,7 @@
 (define (last-world? b)
   (member? (board-goal b)
            (board-block b)))
+
 ; Board -> Board 
 ; launches the program from some initial state b
 
