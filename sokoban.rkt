@@ -79,6 +79,10 @@
                       (make-posn (+ MIN (* 2 SIZE))
                                  MIN))
                 (make-posn (+ MIN (* SIZE 3)) MIN)))
+(define BOARD4 (make-board
+                (make-posn (- MAX SIZE) MIN)
+                (list (make-posn MAX MIN))
+                (make-posn MAX MAX)))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board
@@ -241,6 +245,7 @@
 
 (check-expect (control BOARD1 "")
               BOARD1)
+
 (check-expect
  (control BOARD1 "right")
  (make-board
@@ -274,28 +279,34 @@
   (board-goal BOARD1)))
 
 (define (control b key)
-  (cond
-    [(string=? key "left")
-     (make-board
-      (make-posn (- (posn-x (board-player b)) SIZE)
-                 (posn-y (board-player b)))
-      (board-block b) (board-goal b))]
-    [(string=? key "right")
-     (make-board
-      (make-posn (+ (posn-x (board-player b)) SIZE)
-                 (posn-y (board-player b)))
-      (board-block b) (board-goal b))]
-    [(string=? key "up")
-     (make-board
-      (make-posn (posn-x (board-player b))
-                 (- (posn-y (board-player b)) SIZE))
-      (board-block b) (board-goal b))]
-    [(string=? key "down")
-     (make-board
-      (make-posn (posn-x (board-player b))
-                 (+ (posn-y (board-player b)) SIZE))
-      (board-block b) (board-goal b))]
-    [else b]))
+  (local (; consumes a Board b and Key key and moves
+          ; the player in given direction
+
+          (define (move-player b key)
+            (cond
+              [(string=? key "left")
+               (make-board
+                (make-posn (- (posn-x (board-player b)) SIZE)
+                           (posn-y (board-player b)))
+                (board-block b) (board-goal b))]
+              [(string=? key "right")
+               (make-board
+                (make-posn (+ (posn-x (board-player b)) SIZE)
+                           (posn-y (board-player b)))
+                (board-block b) (board-goal b))]
+              [(string=? key "up")
+               (make-board
+                (make-posn (posn-x (board-player b))
+                           (- (posn-y (board-player b)) SIZE))
+                (board-block b) (board-goal b))]
+              [(string=? key "down")
+               (make-board
+                (make-posn (posn-x (board-player b))
+                           (+ (posn-y (board-player b)) SIZE))
+                (board-block b) (board-goal b))]
+              [else b])))
+    (move-player b key)))
+  
 
 ; Board -> Boolean
 ; consumes a Board b and produces true if the end
