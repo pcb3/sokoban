@@ -77,7 +77,7 @@
                 (make-posn MIN MIN)
                 (list (make-posn (+ MIN SIZE) MIN)
                       (make-posn (+ MIN (* 2 SIZE))
-                                    MIN))
+                                 MIN))
                 (make-posn (+ MIN (* SIZE 3)) MIN)))
 
 ; Board -> Board
@@ -337,13 +337,13 @@
 ; consumes a Board b and a Key key and returns
 ; true if its possible to push an adjacent block
 
-;(check-expect
-; (push?
-;  (make-board
-;   (make-posn MIN MIN)
-;   (list (make-posn (+ MIN SIZE) MIN))
-;   (make-posn (+ MIN (* SIZE 2)) MIN)) "right")
-; #true)
+(check-expect
+ (push?
+  (make-board
+   (make-posn MIN MIN)
+   (list (make-posn (+ MIN SIZE) MIN))
+   (make-posn (+ MIN (* SIZE 2)) MIN)) "right")
+ #true)
 
 (check-expect
  (push?
@@ -397,40 +397,65 @@
                [(string=? key "right")
                 (cond
                   [else
-                    (member?
-                     (make-posn (+ (posn-x (board-player b))
-                                   (* 2 SIZE))
-                                 (posn-y (board-player b)))
-                      (board-block b))])]
+                   (member?
+                    (make-posn (+ (posn-x (board-player b))
+                                  (* 2 SIZE))
+                               (posn-y (board-player b)))
+                    (board-block b))])]
                [(string=? key "left")
                 (cond
                   [else
-                    (member?
-                     (make-posn (- (posn-x (board-player b))
-                                   (* 2 SIZE))
-                                 (posn-y (board-player b)))
-                      (board-block b))])]
+                   (member?
+                    (make-posn (- (posn-x (board-player b))
+                                  (* 2 SIZE))
+                               (posn-y (board-player b)))
+                    (board-block b))])]
                [(string=? key "up")
                 (cond
                   [else
-                    (member?
-                     (make-posn (posn-x (board-player b))
-                                 (- (posn-y (board-player b))
-                                    (* 2 SIZE)))
-                      (board-block b))])]
+                   (member?
+                    (make-posn (posn-x (board-player b))
+                               (- (posn-y (board-player b))
+                                  (* 2 SIZE)))
+                    (board-block b))])]
                [(string=? key "down")
                 (cond
                   [else
-                    (member?
-                     (make-posn (posn-x (board-player b))
-                                 (+ (posn-y (board-player b))
-                                    (* 2 SIZE)))
-                      (board-block b))])]
+                   (member?
+                    (make-posn (posn-x (board-player b))
+                               (+ (posn-y (board-player b))
+                                  (* 2 SIZE)))
+                    (board-block b))])]
+               [else #false]))
+
+           ; Board Key -> Boolean
+           ; consumes a Board b and a Key key and returns
+           ; true if there is a boundary in the direction
+           ; of intended movement
+
+           (define (boundary? b key)
+             (cond
+               [(string=? key "right")
+                (>= (+ (posn-x (board-player b))
+                       (* 2 SIZE))
+                    MAX)]
+               [(string=? key "left")
+                (>= (- (posn-x (board-player b))
+                       (* 2 SIZE))
+                    MIN)]
+               [(string=? key "up")
+                (>= (- (posn-y (board-player b))
+                       (* 2 SIZE))
+                    MIN)]
+               [(string=? key "down")
+                (>= (+ (posn-y (board-player b))
+                       (* 2 SIZE))
+                    MAX)]
                [else #false])))
     
-           
-           
-    (and (adjacent? b key) (not (blocked? b key)))))
+    (and (adjacent? b key)
+         (not (blocked? b key))
+         (not (boundary? b key)))))
 
 ; Board -> Board 
 ; launches the program from some initial state b
