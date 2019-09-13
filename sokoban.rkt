@@ -254,21 +254,21 @@
   (board-block BOARD1)
   (board-goal BOARD1)))
 
-;(check-expect
-; (control BOARD1 "left")
-; (make-board
-;  (make-posn (- (posn-x (board-player BOARD1)) SIZE)
-;             (posn-y (board-player BOARD1)))
-;  (board-block BOARD1)
-;  (board-goal BOARD1)))
-;
-;(check-expect
-; (control BOARD1 "up")
-; (make-board
-;  (make-posn (posn-x (board-player BOARD1))
-;             (- (posn-y (board-player BOARD1)) SIZE))
-;  (board-block BOARD1)
-;  (board-goal BOARD1)))
+(check-expect
+ (control BOARD1 "left")
+ (make-board
+  (make-posn (posn-x (board-player BOARD1))
+             (posn-y (board-player BOARD1)))
+  (board-block BOARD1)
+  (board-goal BOARD1)))
+
+(check-expect
+ (control BOARD1 "up")
+ (make-board
+  (make-posn (posn-x (board-player BOARD1))
+             (posn-y (board-player BOARD1)))
+  (board-block BOARD1)
+  (board-goal BOARD1)))
 
 (check-expect
  (control BOARD1 "down")
@@ -324,20 +324,20 @@
           ; is at a boundary
 
           (define (player-boundary? b key)
-             (cond
-               [(string=? key "right")
-                (> (+ (posn-x (board-player b)) DELTA)
-                    MAX)]
-               [(string=? key "left")
-                (<= (- (posn-x (board-player b)) DELTA)
-                    MIN)]
-               [(string=? key "up")
-                (<= (- (posn-y (board-player b)) DELTA)
-                    MIN)]
-               [(string=? key "down")
-                (>= (+ (posn-y (board-player b)) DELTA)
-                    MAX)]
-               [else #false])))
+            (cond
+              [(string=? key "right")
+               (> (+ (posn-x (board-player b)) DELTA)
+                  MAX)]
+              [(string=? key "left")
+               (<= (- (posn-x (board-player b)) DELTA)
+                   MIN)]
+              [(string=? key "up")
+               (<= (- (posn-y (board-player b)) DELTA)
+                   MIN)]
+              [(string=? key "down")
+               (>= (+ (posn-y (board-player b)) DELTA)
+                   MAX)]
+              [else #false])))
 
     
     (move-player b key)))
