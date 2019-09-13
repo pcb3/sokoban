@@ -284,7 +284,6 @@
 
           (define (move-player b key)
             (cond
-              [(player-boundary? b key) b]
               [(string=? key "left")
                (make-board
                 (make-posn (- (posn-x (board-player b)) SIZE)
@@ -340,7 +339,10 @@
               [else #false])))
 
     
-    (move-player b key)))
+    (cond
+      [else (if (player-boundary? b key)
+                b
+                (move-player b key))])))
   
 
 ; Board -> Boolean
