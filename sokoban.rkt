@@ -83,6 +83,10 @@
                 (make-posn (- MAX SIZE) MIN)
                 (list (make-posn MAX MIN))
                 (make-posn MAX MAX)))
+(define BOARD5 (make-board
+                (make-posn MIN MIN)
+                (list (make-posn (+ MIN SIZE) (+ MIN SIZE)))
+                (make-posn (+ MIN (* SIZE 2)) MIN)))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board
@@ -321,25 +325,25 @@
               [(string=? key "right")
                (cond
                  [(not (equal? (+ (posn-x (board-player b)) SIZE)
-                          (posn-x x)))
+                               (posn-x x)))
                   #true]
                  [else #false])]
               [(string=? key "left")
                (cond
                  [(not (equal? (- (posn-x (board-player b)) SIZE)
-                          (posn-x x)))
+                               (posn-x x)))
                   #true]
                  [else #false])]
               [(string=? key "up")
                (cond
                  [(not (equal? (- (posn-y (board-player b)) SIZE)
-                          (posn-y x)))
+                               (posn-y x)))
                   #true]
                  [else #false])]
               [(string=? key "down")
                (cond
                  [(not (equal? (+ (posn-y (board-player b)) SIZE)
-                          (posn-y x)))
+                               (posn-y x)))
                   #true]
                  [else #false])]
               [else #false]))
@@ -355,13 +359,13 @@
                (> (+ (posn-x (board-player b)) DELTA)
                   MAX)]
               [(string=? key "left")
-               (<= (- (posn-x (board-player b)) DELTA)
+               (< (- (posn-x (board-player b)) DELTA)
                    MIN)]
               [(string=? key "up")
-               (<= (- (posn-y (board-player b)) DELTA)
+               (< (- (posn-y (board-player b)) DELTA)
                    MIN)]
               [(string=? key "down")
-               (>= (+ (posn-y (board-player b)) DELTA)
+               (> (+ (posn-y (board-player b)) DELTA)
                    MAX)]
               [else #false]))
 
@@ -407,13 +411,48 @@
                             (+ (posn-y (board-player b)) (* 2 SIZE)))
                  (filter-blocks (board-block b)))
                 (board-goal b))]
-              [else b])))
+              [else b]))
+
+          ; Board Key -> Boolean
+          ; consumes a Board b and a Key key and produces true if the
+          ; player has a free space to move into
+
+          (define (move-player-space? b key)
+            (cond
+              [(and (string=? key "right")
+                    (not (member? (make-posn
+                                   (+ (posn-x (board-player b)) SIZE)
+                                   (posn-y (board-player b)))
+                                  (board-block b))))
+               #true]
+              [(and (string=? key "left")
+                    (not (member? (make-posn
+                                   (- (posn-x (board-player b)) SIZE)
+                                   (posn-y (board-player b)))
+                                  (board-block b))))
+               #true]
+              [(and (string=? key "up")
+                    (not (member? (make-posn
+                                   (posn-x (board-player b))
+                                   (- (posn-y (board-player b)) SIZE))
+                                  (board-block b))))
+               #true]
+              [(and (string=? key "down")
+                    (not (member? (make-posn
+                                   (posn-x (board-player b))
+                                   (+ (posn-y (board-player b)) SIZE))
+                                  (board-block b))))
+               #true]
+              [else
+               #false])))
 
     
     (cond
-      [(player-boundary? b key) b]
       [(push? b key) (move-block b key)]
-      [else (move-block b key)])))
+      [(and (move-player-space? b key)
+            (not (player-boundary? b key)))
+       (move-player b key)]
+      [else b])))
   
 
 ; Board -> Boolean
@@ -475,9 +514,10 @@
 (define (push? b key)
   (local  (; Board Key -> Boolean
            ; consumes a Board b and Key key and
-           ; produces true if the players x coord
-           ; is a member of any of the block x coords
-           ; on key side
+           ; produces true if the players coord
+           ; is a member of any of the blocks coord
+           ; in the respective axis
+           
            (define (adjacent? b key)
              (cond
                [(and (string=? key "right")
@@ -555,19 +595,19 @@
            (define (boundary? b key)
              (cond
                [(string=? key "right")
-                (>= (+ (posn-x (board-player b))
+                (> (+ (posn-x (board-player b))
                        (* 2 SIZE))
                     MAX)]
                [(string=? key "left")
-                (<= (- (posn-x (board-player b))
+                (< (- (posn-x (board-player b))
                        (* 2 SIZE))
                     MIN)]
                [(string=? key "up")
-                (<= (- (posn-y (board-player b))
+                (< (- (posn-y (board-player b))
                        (* 2 SIZE))
                     MIN)]
                [(string=? key "down")
-                (>= (+ (posn-y (board-player b))
+                (> (+ (posn-y (board-player b))
                        (* 2 SIZE))
                     MAX)]
                [else #false])))
@@ -579,8 +619,8 @@
 ; Board -> Board 
 ; launches the program from some initial state b
 
-(define (sokoban rate)
-  (big-bang BOARD2
+(define (sokoban rate b)
+  (big-bang b
     [on-tick tock rate]
     [to-draw render]
     [on-key control]
