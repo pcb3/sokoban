@@ -27,11 +27,11 @@
   (circle DELTA "solid" "tomato"))
 (define START-MSG (text "SOKOBAN!" (* SIZE 2) 'lightgray))
 (define MSG1 (text "MOVE WITH THE DIRECTION KEYS"
-                               16 'lightgray))
+                   16 'lightgray))
 (define MSG2 (text "PUSH BLOCKS ONTO THE GOAL TO WIN"
-                               16 'lightgray))
-(define MSG3 (text "PRESS R TO RESET AND SPACE TO START"
-                          16 'lightgray))
+                   16 'lightgray))
+(define MSG3 (text "R = RESET, Q = QUIT AND SPACE = START"
+                   16 'lightgray))
 (define LAST-MSG (text "GAME OVER" (* SIZE 2) 'lightgray))
 
 ; structures
@@ -89,38 +89,17 @@
                (make-posn -100 0)
                '()
                (make-posn -100 0)))
-(define LEVEL1
-  (make-board
-    (make-posn (* SIZE 5)
-               (/ HEIGHT 2))
-    (list (make-posn (* SIZE 5)
-                     (- (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 6)
-                     (- (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 7)
-                     (- (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 8)
-                     (- (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 9)
-                     (- (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 10)
-                     (- (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 5)
-                     (+ (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 6)
-                     (+ (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 7)
-                     (+ (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 8)
-                     (+ (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 9)
-                     (+ (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 10)
-                     (+ (/ HEIGHT 2) SIZE))
-          (make-posn (* SIZE 7)
-                     (/ HEIGHT 2)))
-    (make-posn (* SIZE 10)
-               (/ HEIGHT 2))))
+(define LEVEL1 (make-board
+                (make-posn (/ WIDTH 2)
+                           (/ HEIGHT 10))
+                (list (make-posn (/ WIDTH 2)
+                                 (/ HEIGHT 5)))
+                (make-posn (/ WIDTH 2)
+                           (/ HEIGHT 2))))
+(define QUIT (make-board
+                (make-posn -100 0)
+                (list (make-posn -100 0))
+                (make-posn -100 0)))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board
@@ -172,9 +151,9 @@
   (cond
     [else (if (start? b)
               (start-screen START-MSG MSG1 MSG2 MSG3)
-  (render-player b
-                 (extract-block b
-                                (render-goal b MT))))]))
+              (render-player b
+                             (extract-block b
+                                            (render-goal b MT))))]))
 
 ; Board Image -> Image
 ; consumes a Board b and image im and renders the
@@ -397,13 +376,13 @@
                   MAX)]
               [(string=? key "left")
                (< (- (posn-x (board-player b)) DELTA)
-                   MIN)]
+                  MIN)]
               [(string=? key "up")
                (< (- (posn-y (board-player b)) DELTA)
-                   MIN)]
+                  MIN)]
               [(string=? key "down")
                (> (+ (posn-y (board-player b)) DELTA)
-                   MAX)]
+                  MAX)]
               [else #false]))
 
           ; Board Key -> Board
@@ -485,9 +464,16 @@
 
     
     (cond
+      [(or (string=? key "q")
+           (string=? key "Q"))
+       QUIT]
+      [(and (start? b) (not (string=? key " ")))
+       START]
       [(and (start? b) (string=? key " "))
-       BOARD5]
-      [(string=? key "r") BOARD5]
+       LEVEL1]
+      [(or (string=? key "r")
+           (string=? key "R"))
+       LEVEL1]
       [(push? b key) (move-block b key)]
       [(and (move-player-space? b key)
             (not (player-boundary? b key)))
@@ -635,20 +621,20 @@
              (cond
                [(string=? key "right")
                 (> (+ (posn-x (board-player b))
-                       (* 2 SIZE))
-                    MAX)]
+                      (* 2 SIZE))
+                   MAX)]
                [(string=? key "left")
                 (< (- (posn-x (board-player b))
-                       (* 2 SIZE))
-                    MIN)]
+                      (* 2 SIZE))
+                   MIN)]
                [(string=? key "up")
                 (< (- (posn-y (board-player b))
-                       (* 2 SIZE))
-                    MIN)]
+                      (* 2 SIZE))
+                   MIN)]
                [(string=? key "down")
                 (> (+ (posn-y (board-player b))
-                       (* 2 SIZE))
-                    MAX)]
+                      (* 2 SIZE))
+                   MAX)]
                [else #false])))
     
     (and (adjacent? b key)
@@ -680,18 +666,18 @@
                            (place-image
                             MSG1 (/ WIDTH 2) (/ HEIGHT 3)
                             (place-image
-                            MSG2 (/ WIDTH 2) (/ HEIGHT 2)
-                            (place-image
-                            MSG3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
+                             MSG2 (/ WIDTH 2) (/ HEIGHT 2)
+                             (place-image
+                              MSG3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
 
 (define (start-screen start msg1 msg2 msg3)
   (place-image start (/ WIDTH 2) (/ HEIGHT 6)
-                           (place-image
-                            msg1 (/ WIDTH 2) (/ HEIGHT 3)
-                            (place-image
-                            msg2 (/ WIDTH 2) (/ HEIGHT 2)
-                            (place-image
-                            msg3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
+               (place-image
+                msg1 (/ WIDTH 2) (/ HEIGHT 3)
+                (place-image
+                 msg2 (/ WIDTH 2) (/ HEIGHT 2)
+                 (place-image
+                  msg3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
 
 ; Board -> Board 
 ; launches the program from some initial state b
