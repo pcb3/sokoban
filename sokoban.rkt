@@ -263,41 +263,6 @@
 ; consumes a Board b and Key k and produces a new
 ; Board dependent on the key
 
-;(check-expect (control BOARD1 "")
-;              BOARD1)
-;
-;(check-expect
-; (control BOARD1 "right")
-; (make-board
-;  (make-posn (+ (posn-x (board-player BOARD1)) SIZE)
-;             (posn-y (board-player BOARD1)))
-;  (board-block BOARD1)
-;  (board-goal BOARD1)))
-;
-;(check-expect
-; (control BOARD1 "left")
-; (make-board
-;  (make-posn (posn-x (board-player BOARD1))
-;             (posn-y (board-player BOARD1)))
-;  (board-block BOARD1)
-;  (board-goal BOARD1)))
-;
-;(check-expect
-; (control BOARD1 "up")
-; (make-board
-;  (make-posn (posn-x (board-player BOARD1))
-;             (posn-y (board-player BOARD1)))
-;  (board-block BOARD1)
-;  (board-goal BOARD1)))
-;
-;(check-expect
-; (control BOARD1 "down")
-; (make-board
-;  (make-posn (posn-x (board-player BOARD1))
-;             (+ (posn-y (board-player BOARD1)) SIZE))
-;  (board-block BOARD1)
-;  (board-goal BOARD1)))
-
 (define (control b key)
   (local (; consumes a Board b and Key key and moves
           ; the player in given direction
@@ -694,7 +659,7 @@
     ))
 
 ; usage
-;(sokoban 1)
+(sokoban 1 START)
 
 
 
