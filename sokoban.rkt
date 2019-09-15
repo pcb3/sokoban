@@ -30,11 +30,9 @@
                                16 'lightgray))
 (define INSTRUCTION-MSG2 (text "PUSH BLOCKS ONTO THE GOAL TO WIN"
                                16 'lightgray))
-(define INSTRUCTION-MSG3 (text "PRESS R TO RESET"
-                               16 'lightgray))
-(define LAST-MSG (text "GAME OVER" (* SIZE 2) 'lightgray))
-(define RESTART-MSG (text "PRESS R TO PLAY AGAIN OR Q TO QUIT"
+(define MSG3-MSG (text "PRESS R TO RESET OR Q TO QUIT"
                           16 'lightgray))
+(define LAST-MSG (text "GAME OVER" (* SIZE 2) 'lightgray))
 
 ; structures
 (define-struct board [player block goal])
@@ -87,6 +85,10 @@
                 (make-posn MIN MIN)
                 (list (make-posn (+ MIN SIZE) (+ MIN SIZE)))
                 (make-posn (+ MIN (* SIZE 2)) MIN)))
+(define START (make-board
+               (make-posn -100 0)
+               '()
+               (make-posn -100 0)))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board
@@ -615,6 +617,20 @@
     (and (adjacent? b key)
          (not (blocked? b key))
          (not (boundary? b key)))))
+
+; Board -> Boolean
+; consumes a Board ba dn returns true if it is
+; the initial setup
+
+(check-expect (start? START) #true)
+
+(check-expect (start? BOARD5) #false)
+
+(define (fn-start? b)
+  (equal? ... ...))
+
+(define (start? b)
+  (equal? b START))
 
 ; Board -> Board 
 ; launches the program from some initial state b
