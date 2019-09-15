@@ -26,11 +26,11 @@
 (define PLAYER
   (circle DELTA "solid" "tomato"))
 (define START-MSG (text "SOKOBAN!" (* SIZE 2) 'lightgray))
-(define INSTRUCTION-MSG1 (text "MOVE WITH THE DIRECTION KEYS"
+(define MSG1 (text "MOVE WITH THE DIRECTION KEYS"
                                16 'lightgray))
-(define INSTRUCTION-MSG2 (text "PUSH BLOCKS ONTO THE GOAL TO WIN"
+(define MSG2 (text "PUSH BLOCKS ONTO THE GOAL TO WIN"
                                16 'lightgray))
-(define INSTRUCTION-MSG3 (text "PRESS R TO RESET OR Q TO QUIT"
+(define MSG3 (text "PRESS R TO RESET AND SPACE TO START"
                           16 'lightgray))
 (define LAST-MSG (text "GAME OVER" (* SIZE 2) 'lightgray))
 
@@ -89,6 +89,38 @@
                (make-posn -100 0)
                '()
                (make-posn -100 0)))
+(define LEVEL1
+  (make-board
+    (make-posn (* SIZE 5)
+               (/ HEIGHT 2))
+    (list (make-posn (* SIZE 5)
+                     (- (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 6)
+                     (- (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 7)
+                     (- (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 8)
+                     (- (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 9)
+                     (- (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 10)
+                     (- (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 5)
+                     (+ (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 6)
+                     (+ (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 7)
+                     (+ (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 8)
+                     (+ (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 9)
+                     (+ (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 10)
+                     (+ (/ HEIGHT 2) SIZE))
+          (make-posn (* SIZE 7)
+                     (/ HEIGHT 2)))
+    (make-posn (* SIZE 10)
+               (/ HEIGHT 2))))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board
@@ -137,9 +169,12 @@
      MT))))
  
 (define (render b)
+  (cond
+    [else (if (start? b)
+              (start-screen START-MSG MSG1 MSG2 MSG3)
   (render-player b
                  (extract-block b
-                                (render-goal b MT))))
+                                (render-goal b MT))))]))
 
 ; Board Image -> Image
 ; consumes a Board b and image im and renders the
@@ -450,12 +485,14 @@
 
     
     (cond
+      [(and (start? b) (string=? key " "))
+       BOARD5]
+      [(string=? key "r") BOARD5]
       [(push? b key) (move-block b key)]
       [(and (move-player-space? b key)
             (not (player-boundary? b key)))
        (move-player b key)]
       [else b])))
-  
 
 ; Board -> Boolean
 ; consumes a Board b and produces true if the end
@@ -636,16 +673,16 @@
 ; consumes four Images and produces the first screen
 
 (check-expect (start-screen START-MSG
-                            INSTRUCTION-MSG1
-                            INSTRUCTION-MSG2
-                            INSTRUCTION-MSG3)
+                            MSG1
+                            MSG2
+                            MSG3)
               (place-image START-MSG (/ WIDTH 2) (/ HEIGHT 6)
                            (place-image
-                            INSTRUCTION-MSG1 (/ WIDTH 2) (/ HEIGHT 3)
+                            MSG1 (/ WIDTH 2) (/ HEIGHT 3)
                             (place-image
-                            INSTRUCTION-MSG2 (/ WIDTH 2) (/ HEIGHT 2)
+                            MSG2 (/ WIDTH 2) (/ HEIGHT 2)
                             (place-image
-                            INSTRUCTION-MSG3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
+                            MSG3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
 
 (define (start-screen start msg1 msg2 msg3)
   (place-image start (/ WIDTH 2) (/ HEIGHT 6)
