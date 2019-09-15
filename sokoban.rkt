@@ -25,12 +25,12 @@
   (circle DELTA "solid" "gold"))
 (define PLAYER
   (circle DELTA "solid" "tomato"))
-(define START-MSG (text "SOKOBAN!" (* SIZE 2) 'white))
+(define START-MSG (text "SOKOBAN!" (* SIZE 2) 'lightgray))
 (define INSTRUCTION-MSG1 (text "MOVE WITH THE DIRECTION KEYS"
                                16 'lightgray))
 (define INSTRUCTION-MSG2 (text "PUSH BLOCKS ONTO THE GOAL TO WIN"
                                16 'lightgray))
-(define MSG3-MSG (text "PRESS R TO RESET OR Q TO QUIT"
+(define INSTRUCTION-MSG3 (text "PRESS R TO RESET OR Q TO QUIT"
                           16 'lightgray))
 (define LAST-MSG (text "GAME OVER" (* SIZE 2) 'lightgray))
 
@@ -631,6 +631,30 @@
 
 (define (start? b)
   (equal? b START))
+
+; Image Image Image Image -> Image
+; consumes four Images and produces the first screen
+
+(check-expect (start-screen START-MSG
+                            INSTRUCTION-MSG1
+                            INSTRUCTION-MSG2
+                            INSTRUCTION-MSG3)
+              (place-image START-MSG (/ WIDTH 2) (/ HEIGHT 6)
+                           (place-image
+                            INSTRUCTION-MSG1 (/ WIDTH 2) (/ HEIGHT 3)
+                            (place-image
+                            INSTRUCTION-MSG2 (/ WIDTH 2) (/ HEIGHT 2)
+                            (place-image
+                            INSTRUCTION-MSG3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
+
+(define (start-screen start msg1 msg2 msg3)
+  (place-image start (/ WIDTH 2) (/ HEIGHT 6)
+                           (place-image
+                            msg1 (/ WIDTH 2) (/ HEIGHT 3)
+                            (place-image
+                            msg2 (/ WIDTH 2) (/ HEIGHT 2)
+                            (place-image
+                            msg3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
 
 ; Board -> Board 
 ; launches the program from some initial state b
