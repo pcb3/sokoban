@@ -404,16 +404,45 @@
                                   (board-block b))))
                #true]
               [else
-               #false])))
+               #false]))
 
-    
+          ; Key -> Boolean
+          ; consumes a Key key and returns true if "q" or "Q" is pressed
+
+          (define (fn-quit? key)
+            (or (string=? key ...)
+                (string=? key ...)))
+
+          (define (quit? key)
+            (or (string=? key "q")
+                (string=? key "Q")))
+
+          ; Board -> Boolean
+; consumes a Board b and returns true if it is the first screen
+
+(define (fn-start? b)
+  (equal? ... ...))
+
+(define (start? b)
+  (equal? b START))
+
+          ; Key -> Boolean
+          ; consumes a Key key and returns true if the the space
+; key has been pressed
+
+          (define (fn-space? key)
+            (string=? key ...))
+
+          (define (space? key)
+            (string=? key " ")))
+                  
     (cond
-      [(or (string=? key "q")
-           (string=? key "Q"))
-       QUIT]
-      [(and (start? b) (not (string=? key " ")))
+      [(quit? key) QUIT]
+      [(and (start? b)
+            (not (space? key)))
        START]
-      [(and (start? b) (string=? key " "))
+      [(and (start? b)
+            (space? key))
        LEVEL1]
       [(or (string=? key "r")
            (string=? key "R"))
@@ -585,44 +614,6 @@
          (not (blocked? b key))
          (not (boundary? b key)))))
 
-; Board -> Boolean
-; consumes a Board b and returns true if its
-; the initial setup
-
-(check-expect (start? START) #true)
-
-(check-expect (start? BOARD5) #false)
-
-(define (fn-start? b)
-  (equal? ... ...))
-
-(define (start? b)
-  (equal? b START))
-
-; Image Image Image Image -> Image
-; consumes four Images and produces the first screen
-
-(check-expect (start-screen START-MSG
-                            MSG1
-                            MSG2
-                            MSG3)
-              (place-image START-MSG (/ WIDTH 2) (/ HEIGHT 6)
-                           (place-image
-                            MSG1 (/ WIDTH 2) (/ HEIGHT 3)
-                            (place-image
-                             MSG2 (/ WIDTH 2) (/ HEIGHT 2)
-                             (place-image
-                              MSG3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
-
-(define (start-screen start msg1 msg2 msg3)
-  (place-image start (/ WIDTH 2) (/ HEIGHT 6)
-               (place-image
-                msg1 (/ WIDTH 2) (/ HEIGHT 3)
-                (place-image
-                 msg2 (/ WIDTH 2) (/ HEIGHT 2)
-                 (place-image
-                  msg3 (/ WIDTH 2) (/ HEIGHT 1.5) MT)))))
-
 ; Board -> Board 
 ; launches the program from some initial state b
 
@@ -632,7 +623,7 @@
     [to-draw render]
     [on-key control]
     [stop-when last-world? last-picture]
-    [state #t]
+    [state #f]
     [close-on-stop 3]
     [name "Sokoban"]
     ))
