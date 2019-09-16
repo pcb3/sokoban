@@ -418,23 +418,35 @@
                 (string=? key "Q")))
 
           ; Board -> Boolean
-; consumes a Board b and returns true if it is the first screen
+          ; consumes a Board b and returns true if it is the first screen
 
-(define (fn-start? b)
-  (equal? ... ...))
+          (define (fn-start? b)
+            (equal? ... ...))
 
-(define (start? b)
-  (equal? b START))
+          (define (start? b)
+            (equal? b START))
 
           ; Key -> Boolean
           ; consumes a Key key and returns true if the the space
-; key has been pressed
+          ; key has been pressed
 
           (define (fn-space? key)
             (string=? key ...))
 
           (define (space? key)
-            (string=? key " ")))
+            (string=? key " "))
+
+          ; Key -> Boolean
+          ; consumes a Key key and returns true if the "r" or "R" key
+          ; is pressed
+
+          (define (fn-reset? key)
+            (or (string=? key ...)
+                (string=? key ...)))
+
+          (define (reset? key)
+            (or (string=? key "r")
+                (string=? key "R"))))
                   
     (cond
       [(quit? key) QUIT]
@@ -444,8 +456,7 @@
       [(and (start? b)
             (space? key))
        LEVEL1]
-      [(or (string=? key "r")
-           (string=? key "R"))
+      [(reset? key)
        LEVEL1]
       [(push? b key) (move-block b key)]
       [(and (move-player-space? b key)
