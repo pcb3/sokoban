@@ -97,9 +97,9 @@
                 (make-posn (/ WIDTH 2)
                            (/ HEIGHT 2))))
 (define QUIT (make-board
-                (make-posn -100 0)
-                (list (make-posn -100 0))
-                (make-posn -100 0)))
+              (make-posn -100 0)
+              (list (make-posn -100 0))
+              (make-posn -100 0)))
 
 ; Board -> Board
 ; consumes a Board b and produces a new Board
@@ -140,124 +140,103 @@
      (posn-x (board-goal BOARD1))
      (posn-y (board-goal BOARD1))
      MT)))))
-             
-(define (fn-render b)
-  (render-player ...
-   (extract-block ...
-    (render-goal ...
-     MT))))
- 
+
 (define (render b)
-  (cond
-    [else (if (start? b)
-              (start-screen START-MSG MSG1 MSG2 MSG3)
-              (render-player b
-                             (extract-block b
-                                            (render-goal b MT))))]))
+  (local (; Board Image -> Image
+          ; consumes a Board b and image im and renders the
+          ; player to the screen
 
-; Board Image -> Image
-; consumes a Board b and image im and renders the
-; player to the screen
+          (define (fn-render-player b im)
+            (place-image ...
+             (posn-x (board-player ...))
+             (posn-y (board-player ...))
+             ...))
 
-(check-expect
- (render-player BOARD1 MT)
- (place-image PLAYER
-              (posn-x (board-player BOARD1))
-              (posn-y (board-player BOARD1))
-              MT))
+          (define (render-player b im)
+            (place-image PLAYER
+                         (posn-x (board-player b))
+                         (posn-y (board-player b))
+                         im))
 
-(define (fn-render-player b im)
-  (place-image ...
-   (posn-x (board-player ...))
-   (posn-y (board-player ...))
-   ...))
+          ; Board Image -> Image
+          ; consumes a block blk and image im and renders the
+          ; blocks to the screen
 
-(define (render-player b im)
-  (place-image PLAYER
-               (posn-x (board-player b))
-               (posn-y (board-player b))
-               im))
+          (define (fn-render-block blk im)
+            (cond
+              [(empty? ...) ...]
+              [else
+               (place-image
+                BLOCK
+                (posn-x (first ...))
+                (posn-y (first ...))
+                (render-block (rest ...) ...))]))
 
-; Board Image -> Image
-; consumes a block blk and image im and renders the
-; blocks to the screen
-
-(check-expect
- (render-block BLOCK2 MT)
- (place-image
-  BLOCK
-  (posn-x (first BLOCK2))
-  (posn-y (first BLOCK2))
-  (place-image
-   BLOCK
-   (posn-x (first (rest BLOCK2)))
-   (posn-y (first (rest BLOCK2)))
-   MT)))
-
-(define (fn-render-block blk im)
-  (cond
-    [(empty? ...) ...]
-    [else
-     (place-image
-      BLOCK
-      (posn-x (first ...))
-      (posn-y (first ...))
-      (render-block (rest ...) ...))]))
-
-(define (render-block blk im)
-  (cond
-    [(empty? blk) im]
-    [else
-     (place-image
-      BLOCK
-      (posn-x (first blk))
-      (posn-y (first blk))
-      (render-block (rest blk) im))]))
+          (define (render-block blk im)
+            (cond
+              [(empty? blk) im]
+              [else
+               (place-image
+                BLOCK
+                (posn-x (first blk))
+                (posn-y (first blk))
+                (render-block (rest blk) im))]))
       
-; Board Image -> List Image
-; consumes a Board b and Image im and extracts the
-; list of blocks
+          ; Board Image -> List Image
+          ; consumes a Board b and Image im and extracts the
+          ; list of blocks  
 
-(check-expect
- (extract-block BOARD1 MT)
- (place-image
-  BLOCK
-  (posn-x (first BLOCK2))
-  (posn-y (first BLOCK2))
-  (place-image
-   BLOCK
-   (posn-x (first (rest BLOCK2)))
-   (posn-y (first (rest BLOCK2)))
-   MT)))      
+          (define (fn-extract-block b im)
+            (render-block (board-block ...) ...))
 
-(define (fn-extract-block b im)
-  (render-block (board-block ...) ...))
+          (define (extract-block b im)
+            (render-block (board-block b) im))
 
-(define (extract-block b im)
-  (render-block (board-block b) im))
+          ; Board Image -> Image
+          ; consumes a Board b and image im and renders the
+          ; goal to the screen
 
-; Board Image -> Image
-; consumes a Board b and image im and renders the
-; goal to the screen
+          (define (fn-render-goal b im)
+            (place-image ...
+             (posn-x (board-goal ...))
+             (posn-y (board-goal ...))
+             ...))
 
-(check-expect
- (render-goal BOARD1 MT)
- (place-image GOAL
-              (posn-x (board-goal BOARD1))
-              (posn-y (board-goal BOARD1))
-              MT))
+          (define (render-goal b im)
+            (place-image GOAL
+                         (posn-x (board-goal b))
+                         (posn-y (board-goal b))
+                         im))
 
-(define (fn-render-goal b im)
-  (place-image ...
-   (posn-x (board-goal ...))
-   (posn-y (board-goal ...))
-   ...))
+          ; Board -> Boolean
+          ; consumes a Board b and returns true if its
+          ; the initial setup
 
-(define (render-goal b im)
-  (place-image GOAL
-               (posn-x (board-goal b))
-               (posn-y (board-goal b))
-               im))
+          (define (fn-start? b)
+            (equal? ... ...))
+
+          (define (start? b)
+            (equal? b START))
+
+          ; Image Image Image Image -> Image
+          ; consumes four Images and produces the first screen
+
+          (define (start-screen start msg1 msg2 msg3)
+            (place-image start (/ WIDTH 2) (/ HEIGHT 6)
+                         (place-image
+                          msg1 (/ WIDTH 2) (/ HEIGHT 3)
+                          (place-image
+                           msg2 (/ WIDTH 2) (/ HEIGHT 2)
+                           (place-image
+                            msg3 (/ WIDTH 2) (/ HEIGHT 1.5) MT))))))
+       
+    (cond
+      [(start? b)
+       (start-screen START-MSG MSG1 MSG2 MSG3)]
+      [else
+       (render-player b
+                      (extract-block b
+                                     (render-goal b MT)))])))
 
 ; Board Key -> Board
 ; consumes a Board b and Key k and produces a new
@@ -607,7 +586,7 @@
          (not (boundary? b key)))))
 
 ; Board -> Boolean
-; consumes a Board ba dn returns true if it is
+; consumes a Board b and returns true if its
 ; the initial setup
 
 (check-expect (start? START) #true)
