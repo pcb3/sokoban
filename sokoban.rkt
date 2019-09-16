@@ -435,16 +435,16 @@
                 (string=? key "R"))))
                   
     (cond
-      [(quit? key) QUIT]
-      [(and (start? b)
-            (not (space? key)))
+      [(quit? key)
+       QUIT]
+      [(and (start? b) (not (space? key)))
        START]
-      [(and (start? b)
-            (space? key))
+      [(and (start? b) (space? key))
        LEVEL1]
       [(reset? key)
        LEVEL1]
-      [(push? b key) (move-block b key)]
+      [(push? b key)
+       (move-block b key)]
       [(and (move-player-space? b key)
             (not (player-boundary? b key)))
        (move-player b key)]
