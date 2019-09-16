@@ -67,20 +67,6 @@
 ; player, block and goal positions
 (define BOARD0 (make-board PLAYER0 BLOCK0 GOAL0))
 (define BOARD1 (make-board PLAYER1 BLOCK2 GOAL1))
-(define BOARD2 (make-board
-                (make-posn MIN MIN)
-                (list (make-posn (+ MIN SIZE) MIN))
-                (make-posn (+ MIN (* SIZE 2)) MIN)))
-(define BOARD3 (make-board
-                (make-posn MIN MIN)
-                (list (make-posn (+ MIN SIZE) MIN)
-                      (make-posn (+ MIN (* 2 SIZE))
-                                 MIN))
-                (make-posn (+ MIN (* SIZE 3)) MIN)))
-(define BOARD4 (make-board
-                (make-posn (- MAX SIZE) MIN)
-                (list (make-posn MAX MIN))
-                (make-posn MAX MAX)))
 (define BOARD5 (make-board
                 (make-posn MIN MIN)
                 (list (make-posn (+ MIN SIZE) (+ MIN SIZE)))
