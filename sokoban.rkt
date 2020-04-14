@@ -56,7 +56,7 @@
         (make-posn (* 4 DELTA) (* 4 DELTA))))
 
 ; a goal is a Posn:
-; a goal is the position the the position a block
+; a goal is the position a block
 ; must inhabit in order to trigger the win condition
 (define GOAL0 (make-posn DELTA DELTA))
 (define GOAL1 (make-posn (* 5 DELTA) (* 5 DELTA)))
